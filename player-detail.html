@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucas Martin - FootStats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .radar-chart-container {
+            height: 300px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-feather="activity" class="text-indigo-600"></i>
+                        <span class="ml-2 text-xl font-bold text-gray-900">FootStats</span>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
+                    <a href="index.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Accueil</a>
+                    <a href="players.html" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Joueurs</a>
+                    <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Clubs</a>
+                    <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Matches</a>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Connexion</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Player Header -->
+    <div class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6 flex flex-col md:flex-row md:items-center">
+                <div class="flex-shrink-0">
+                    <div class="h-24 w-24 rounded-full bg-indigo-100 overflow-hidden border-4 border-white shadow">
+                        <img src="http://static.photos/sport/640x360/1" alt="Player" class="h-full w-full object-cover">
+                    </div>
+                </div>
+                <div class="mt-4 md:mt-0 md:ml-6">
+                    <div class="flex items-center">
+                        <h1 class="text-2xl font-bold text-gray-900">Lucas Martin</h1>
+                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                            Attaquant
+                        </span>
+                    </div>
+                    <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i data-feather="calendar" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                            24 ans (12/05/1999)
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i data-feather="home" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                            FC Amateur
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i data-feather="map-pin" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                            Paris, France
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 md:mt-0 md:ml-auto flex space-x-3">
+                    <button class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <i data-feather="edit" class="mr-2 w-4 h-4"></i>
+                        Modifier
+                    </button>
+                    <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <i data-feather="plus" class="mr-2 w-4 h-4"></i>
+                        Ajouter stats
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Bio -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Biographie</h2>
+                    <p class="text-gray-600">
+                        Lucas Martin est un attaquant talentueux ayant rejoint le FC Amateur en 2021. Doté d'une excellente vision du jeu et d'une frappe puissante, il est rapidement devenu un élément clé de l'équipe. Avant de rejoindre le club, il a évolué dans les équipes de jeunes du Paris FC.
+                    </p>
+                    <div class="mt-6 grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Taille</p>
+                            <p class="font-medium text-gray-900">182 cm</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Poids</p>
+                            <p class="font-medium text-gray-900">78 kg</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Pied fort</p>
+                            <p class="font-medium text-gray-900">Droit</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Numéro</p>
+                            <p class="font-medium text-gray-900">9</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Season Stats -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-medium text-gray-900">Statistiques 2023/24</h2>
+                        <select class="mt-1 block w-1/3 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option>2023/24</option>
+                            <option>2022/23</option>
+                            <option>2021/22</option>
+                        </select>
+                    </div>
+                    
+                    <div class="stats-grid mt-4">
+                        <div class="stat-card bg-white p-4 rounded-lg border border-gray-200 text-center">
+                            <p class="text-sm text-gray-500">Matchs</p>
+                            <p class="text-2xl font-bold text-indigo-600">12</p>
+                        </div>
+                        <div class="stat-card bg-white p-4 rounded-lg border border-gray-200 text-center">
+                            <p class="text-sm text-gray-500">Buts</p>
+                            <p class="text-2xl font-bold text-indigo-600">8</p>
+                        </div>
+                        <div class="stat-card bg-white p-4 rounded-lg border border-gray-200 text-center">
+                            <p class="text-sm text-gray-500">Passes</p>
+                            <p class="text-2xl font-bold text-indigo-600">4</p>
+                        </div>
+                        <div class="stat-card bg-white p-4 rounded-lg border border-gray-200 text-center">
+                            <p class="text-sm text-gray-500">Minutes</p>
+                            <p class="text-2xl font-bold text-indigo-600">987</p>
+                        </div>
+                        <div class="stat-card bg-white p-4 rounded-lg border border-gray-200 text-center">
+                            <p class="text-sm text-gray-500">Tirs pm</p>
+                            <p class="text-2xl font-bold text-indigo-600">3.2</p>
+                        </div>
+                        <div class="stat-card bg-white p-4 rounded-lg border border-gray-200 text-center">
+                            <p class="text-sm text-gray-500">Note</p>
+                            <p class="text-2xl font-bold text-indigo-600">8.2</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Match Performance -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Performances par match</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Min.</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15/10/23</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">FC Amateur vs AS Sportive</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3-1</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">90</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8.8</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">08/10/23</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">JS Football vs FC Amateur</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2-2</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">85</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">7.5</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">01/10/23</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">FC Amateur vs US Club</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4-0</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">90</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">9.2</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">24/09/23</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">AS Sportive vs FC Amateur</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1-3</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">78</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8.0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="#" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">Voir tous les matchs</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-6">
+                <!-- Player Profile -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Profil du joueur</h2>
+                    <div class="radar-chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Form -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Forme récente</h2>
+                    <div class="h-64">
+                        <canvas id="formChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Physical Stats -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Statistiques physiques</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm text-gray-500 mb-1">
+                                <span>Vitesse</span>
+                                <span>82/100</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 82%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm text-gray-500 mb-1">
+                                <span>Endurance</span>
+                                <span>75/100</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm text-gray-500 mb-1">
+                                <span>Force</span>
+                                <span>68/100</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 68%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm text-gray-500 mb-1">
+                                <span>Agilité</span>
+                                <span>79/100</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 79%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">FootStats</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-300 hover:text-white">À propos</a></li>
+                        <li><a href="#" class="text-base text-gray-300 hover:text-white">Fonctionnalités</a></li>
+                        <li><a href="#" class="
+</body>
+</html>

@@ -1,0 +1,98 @@
+Tu es un générateur full-stack. Crée une application web moderne pour répertorier des joueurs amateurs avec 3 rôles (admin, manager, visiteur), des cartes joueur avec statistiques avancées, et un back-office.
+
+## Cible technique
+- Monorepo full-stack.
+- Frontend : Next.js (App Router), TypeScript, Tailwind, shadcn/ui, Recharts.
+- Backend : Node + TypeScript (tRPC ou REST Express/Fastify), PostgreSQL.
+- Auth : JWT + cookies httpOnly (ou NextAuth si plus simple). RBAC (admin, manager, visitor).
+- Stockage images : champ URL (mock), architecture prête pour CDN.
+- Tests : Vitest pour back, Playwright pour e2e basiques.
+- Qualité : ESLint, Prettier, Husky (pre-commit).
+- Déploiement : scripts prêts pour Vercel (front) + Railway/Render (API/DB).
+
+## Modèle de données (PostgreSQL, UUID)
+Tables principales :
+- roles(id serial PK, name enum: 'admin'|'manager'|'visitor' UNIQUE)
+- users(id uuid PK, email UNIQUE NOT NULL, password_hash NOT NULL, display_name, role_id FK roles, club_id FK clubs, created_at, updated_at)
+- clubs(id serial PK, name UNIQUE, city, logo_url)
+- teams(id serial PK, club_id FK clubs, name, category)
+- seasons(id serial PK, name, start_year int, end_year int)
+- players(id uuid PK, firstname, lastname, birthdate, position, dominant_side, height_cm int, weight_kg int, club_id FK clubs, photo_url, bio, created_by FK users, created_at, updated_at)
+- matches(id uuid PK, season_id FK seasons, competition, date timestamptz, team_home_id FK teams, team_away_id FK teams, score_home int, score_away int)
+- player_stats(id uuid PK, player_id FK players ON DELETE CASCADE, match_id FK matches ON DELETE CASCADE,
+  minutes int, goals int, assists int, shots int, shots_on_target int, xg numeric(4,2), xa numeric(4,2),
+  interceptions int, tackles int, fouls int, yellow_cards int, red_cards int, rating numeric(3,1),
+  UNIQUE(player_id, match_id))
+Index : players(lastname, firstname), matches(date), player_stats(player_id, match_id).
+
+## Règles RBAC & sécurité
+- visitor : lecture seule (listes, fiches, recherche).
+- manager : CRUD joueurs, stats, matches, équipes, import CSV ; limité à son club via contrôles back (scopes par club_id).
+- admin : tous droits + gestion rôles, clubs, utilisateurs.
+- Back : validation schéma zod, rate limiting basique sur endpoints publics, logs d’audit (who/what/when).
+- Mot de passe : hash Argon2/BCrypt. Cookies httpOnly, SameSite=Lax.
+- Champ created_by et audit (created_at/updated_at) sur players et matches.
+
+## API à générer (REST ou tRPC) — chemins REST proposés
+Auth
+- POST /auth/register (admin, manager)
+- POST /auth/login
+- POST /auth/logout
+- GET  /auth/me
+
+Players
+- GET  /players?search=&club=&position=&season=&page=
+- GET  /players/:id
+- POST /players          (manager/admin)
+- PUT  /players/:id      (manager/admin, périmètre club)
+- DELETE /players/:id    (admin ou manager selon règle club)
+
+Stats
+- GET  /players/:id/stats?season=
+- POST /players/:id/stats          (manager/admin)
+- GET  /matches/:id/stats
+
+Matches & référentiels
+- CRUD /matches, /teams, /seasons (manager/admin selon périmètre)
+- GET /clubs ; CRUD /clubs (admin)
+
+Imports
+- POST /imports/players (CSV upload → job + validation + aperçu)
+- GET  /imports/:jobId (statut)
+
+## Pages & UI (Next.js)
+Public/Visitor
+- / : recherche rapide + joueurs en tendance.
+- /players : grille cartes + filtres (poste, club, âge, saison).
+- /players/[id] : fiche joueur (photo, bio, KPIs, graphiques Recharts : radar profil, barres par match, ligne tendance).
+- /matches/[id] : feuille de match + stats individuelles.
+
+Manager
+- /dashboard : actions rapides (Créer joueur/match, Import CSV, validations en attente).
+- /dashboard/players (table CRUD), /dashboard/matches, /dashboard/imports (wizard import + mapping colonnes).
+
+Admin
+- /admin : gestion utilisateurs (rôles), clubs, logs d’audit, paramètres.
+
+Composants
+- PlayerCard (nom, poste, club, 3 KPIs : minutes, buts, rating).
+- Filters (position, club, saison, tranche d’âge).
+- Charts : Radar (profil saison), Bar (stats par match), Line (tendance).
+
+## Imports CSV (exigences)
+- Modèles attendus : players.csv, matches.csv, player_stats.csv.
+- Étapes : upload → détection colonnes → mapping → prévisualisation erreurs → commit.
+- Validation : contrôles types/valeurs, référentiels (postes, clubs, saisons).
+
+## Seed & démo
+- Seed : 3 clubs, 6 équipes, 40 joueurs, 60 matchs (saison 2025/26), stats auto-générées plausibles.
+- Compte admin (email admin@example.com / pwd Admin123! à changer).
+- Compte manager (lié club 1).
+
+## Qualité & DX
+- Scripts npm : dev, build, test, lint, db:migrate, db:seed.
+- Migrations SQL générées et reproductibles.
+- README avec pas-à-pas (env, migrations, seed, comptes test).
+- Tests : au moins 1 test API (players CRUD) et 1 test e2e (parcours visiteur : liste → fiche).
+
+Livrable attendu : code complet exécutable localement (docker-compose Postgres en option), prêt à déployer.
