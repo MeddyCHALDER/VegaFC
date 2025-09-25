@@ -1,0 +1,13 @@
+```css
+.radar-chart {
+    width: 100%;
+    height: 300px;
+}
+.player-card {
+    transition: all 0.3s ease;
+}
+.player-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+```

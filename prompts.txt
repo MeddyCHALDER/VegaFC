@@ -96,3 +96,4 @@ Composants
 - Tests : au moins 1 test API (players CRUD) et 1 test e2e (parcours visiteur : liste → fiche).
 
 Livrable attendu : code complet exécutable localement (docker-compose Postgres en option), prêt à déployer.
+Sépare le css et le javascript de tout le projet

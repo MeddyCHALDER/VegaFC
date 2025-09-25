@@ -9,18 +9,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
-    <style>
-        .player-card {
-            transition: all 0.3s ease;
-        }
-        .player-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        .filter-section {
-            transition: all 0.3s ease;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/players.css">
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
@@ -492,15 +481,6 @@
         </div>
     </footer>
 
-    <script>
-        AOS.init();
-        feather.replace();
-        
-        // Toggle filters
-        document.getElementById('filter-toggle').addEventListener('click', function() {
-            const filterSection = document.getElementById('filter-section');
-            filterSection.classList.toggle('hidden');
-        });
-    </script>
+    <script src="/js/players.js"></script>
 </body>
 </html>
